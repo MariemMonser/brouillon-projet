@@ -1,0 +1,17 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  /* MODIFICATION ICI : 
+    On utilise un chemin relatif (avec './') 
+    pour que Webpack trouve l'image.
+  */
+  background-image: url('./assets/bright-ideas-bg.jpg'); 
+  
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; 
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

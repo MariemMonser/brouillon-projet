@@ -1,0 +1,9 @@
+/* src/App.css */
+
+/* Ce fichier peut être vide. 
+   Le composant SignUp prend déjà 100% de la hauteur 
+   et gère son propre style. */
+.App {
+  /* On peut enlever le 'text-align: center;' par défaut de Create React App */
+  text-align: left;
+}
