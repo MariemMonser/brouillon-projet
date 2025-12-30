@@ -1,0 +1,118 @@
+.language-switcher {
+  position: relative;
+  z-index: 1000;
+}
+
+.language-switcher-dropdown {
+  position: relative;
+}
+
+.language-switcher-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(124, 73, 245, 0.1);
+  border: 1px solid rgba(124, 73, 245, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.language-switcher-button:hover {
+  background: rgba(124, 73, 245, 0.2);
+  border-color: rgba(124, 73, 245, 0.5);
+}
+
+.current-flag {
+  font-size: 1.2rem;
+}
+
+.current-language {
+  min-width: 60px;
+  text-align: left;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+}
+
+.language-switcher-dropdown:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.language-switcher-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background: linear-gradient(135deg, rgba(18, 16, 28, 0.98), rgba(24, 20, 35, 0.98));
+  border: 1px solid rgba(124, 73, 245, 0.3);
+  border-radius: 8px;
+  padding: 5px;
+  min-width: 150px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.language-switcher-dropdown:hover .language-switcher-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.language-option:hover {
+  background: rgba(124, 73, 245, 0.2);
+  color: #fff;
+}
+
+.language-option.active {
+  background: rgba(124, 73, 245, 0.3);
+  color: #fff;
+  font-weight: 600;
+}
+
+.language-option .flag {
+  font-size: 1.2rem;
+}
+
+.language-option .name {
+  flex: 1;
+}
+
+/* RTL Support */
+[dir="rtl"] .language-switcher-menu {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .current-language {
+  text-align: right;
+}
+
+[dir="rtl"] .language-option {
+  text-align: right;
+}
+

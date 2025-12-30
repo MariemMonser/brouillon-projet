@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import PostIdea from '../components/PostIdea'; // ← Import du nouveau composant
+import { useTranslation } from 'react-i18next';
+import PostIdea from '../components/PostIdea';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import '../styles/accueil.css';
 import bgImage from '../assets/bright-ideas-bg.jpg';
 
 const Acceuil = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -152,7 +155,7 @@ const Acceuil = () => {
     
     const commentText = commentTexts[ideaId]?.trim();
     if (!commentText || commentText.length === 0) {
-      setError('Le commentaire ne peut pas être vide');
+      setError(t('errors.generic'));
       return;
     }
 
@@ -259,7 +262,7 @@ const Acceuil = () => {
       const updatedUser = { ...data.user, profilePhoto: editData.profilePhoto || data.user.profilePhoto };
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      setSuccess('Informations mises à jour avec succès !');
+      setSuccess(t('success.profileUpdated'));
       setLoading(false);
     } catch (err) {
       setError(err.message || "Erreur lors de la mise à jour");
@@ -270,10 +273,10 @@ const Acceuil = () => {
   const handleChangePassword = async () => {
     setError('');
     setSuccess('');
-    if (!passwordData.oldPassword) { setError('Veuillez saisir votre ancien mot de passe'); return; }
-    if (!passwordData.newPassword) { setError('Veuillez saisir votre nouveau mot de passe'); return; }
-    if (passwordData.newPassword.length < 8) { setError('Le nouveau mot de passe doit contenir au moins 8 caractères'); return; }
-    if (passwordData.newPassword !== passwordData.confirmPassword) { setError('Les mots de passe ne correspondent pas'); return; }
+    if (!passwordData.oldPassword) { setError(t('profile.enterOldPassword')); return; }
+    if (!passwordData.newPassword) { setError(t('profile.enterNewPassword')); return; }
+    if (passwordData.newPassword.length < 8) { setError(t('profile.passwordMinLength')); return; }
+    if (passwordData.newPassword !== passwordData.confirmPassword) { setError(t('profile.passwordsDontMatch')); return; }
 
     setLoading(true);
     try {
@@ -285,7 +288,7 @@ const Acceuil = () => {
       });
       const data = await response.json();
       if (!data.success) throw new Error(data.message || "Erreur lors du changement de mot de passe");
-      setSuccess('Mot de passe changé avec succès !');
+      setSuccess(t('success.passwordChanged'));
       setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '', showOld: false, showNew: false, showConfirm: false });
       setLoading(false);
     } catch (err) {
@@ -295,7 +298,7 @@ const Acceuil = () => {
   };
 
   if (!user) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#05060a', color: '#fff' }}><p>Chargement...</p></div>;
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#05060a', color: '#fff' }}><p>{t('common.loading')}</p></div>;
   }
 
   const profilePhotoSrc = editData.profilePhoto || user.profilePhoto || null;
@@ -321,12 +324,15 @@ const Acceuil = () => {
             }
             <div className="sidebar-username">{user.alias || user.name}</div>
           </div>
+          <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <nav className="sidebar-nav" aria-label="Main menu">
-          <Link to="/accueil" className="nav-item active">Home</Link>
-          <Link to="/my-ideas" className="nav-item">My Ideas</Link>
-          <Link to="/statistics" className="nav-item">Statistics</Link>
+          <Link to="/accueil" className="nav-item active">{t('nav.home')}</Link>
+          <Link to="/my-ideas" className="nav-item">{t('nav.myIdeas')}</Link>
+          <Link to="/statistics" className="nav-item">{t('nav.statistics')}</Link>
 
           <div
             className="nav-item profile-item"
@@ -338,7 +344,7 @@ const Acceuil = () => {
             aria-expanded={showDropdown}
             aria-controls="profile-submenu"
           >
-            Profile
+            {t('nav.profile')}
             <span className={`dropdown-arrow-sidebar ${showDropdown ? 'open' : ''}`}>▼</span>
           </div>
 
@@ -348,18 +354,18 @@ const Acceuil = () => {
                 setShowProfileModal(true); 
                 setActiveTab('info'); 
                 setShowDropdown(false);
-              }}>Personal Information</button>
+              }}>{t('nav.personalInfo')}</button>
               <button className="dropdown-submenu-item" onClick={() => { 
                 setShowProfileModal(true); 
                 setActiveTab('password'); 
                 setShowDropdown(false);
-              }}>Change Password</button>
+              }}>{t('nav.changePassword')}</button>
             </div>
           )}
         </nav>
 
         <div className="sidebar-footer">
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+          <button className="logout-btn" onClick={handleLogout}>{t('nav.logout')}</button>
         </div>
       </aside>
 
@@ -367,9 +373,9 @@ const Acceuil = () => {
       <div className="main-content-wrapper">
         <section className="hero-section glass-hero hero-improved" role="banner" aria-label="Page header">
           <div className="hero-left hero-left-improved">
-            <h1 className="hero-title hero-title-improved">Share Your Ideas. Inspire the World.</h1>
+            <h1 className="hero-title hero-title-improved">{t('home.title')}</h1>
             <div className="hero-accent" aria-hidden="true" />
-            <p className="hero-subtitle hero-subtitle-improved">Post your ideas, discover others, and connect with creative minds.</p>
+            <p className="hero-subtitle hero-subtitle-improved">{t('home.subtitle')}</p>
           </div>
         </section>
 
@@ -379,7 +385,7 @@ const Acceuil = () => {
 
           {/* Fil d'actualités */}
           <div className="panel card-panel">
-            <h2>🚀 Fil d'actualités</h2>
+            <h2>🚀 {t('home.feed')}</h2>
             {error && (
               <div style={{ 
                 padding: '12px', 
@@ -394,9 +400,9 @@ const Acceuil = () => {
               </div>
             )}
             {ideasLoading ? (
-              <p>Chargement des idées...</p>
+              <p>{t('home.loadingIdeas')}</p>
             ) : ideas.length === 0 ? (
-              <p>Aucune idée publiée pour le moment. Soyez le premier à partager !</p>
+              <p>{t('home.noIdeas')}</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
                 {ideas.map((idea) => (
@@ -430,7 +436,7 @@ const Acceuil = () => {
                       )}
                       <div>
                         <div style={{ fontWeight: 'bold', color: '#fff' }}>
-                          {idea.author?.alias || idea.author?.name || 'Unknown'}
+                          {idea.author?.alias || idea.author?.name || t('common.unknown')}
                         </div>
                         <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
                           {new Date(idea.createdAt).toLocaleDateString('fr-FR', {
@@ -525,7 +531,7 @@ const Acceuil = () => {
                         }}
                       >
                         <span>💬</span>
-                        <span>{idea.comments?.length || 0} comments</span>
+                        <span>{idea.comments?.length || 0} {t('home.comments')}</span>
                       </button>
                     </div>
 
@@ -573,7 +579,7 @@ const Acceuil = () => {
                                 <div style={{ flex: 1 }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                     <span style={{ fontWeight: 'bold', color: '#fff', fontSize: '0.9rem' }}>
-                                      {comment.user?.alias || comment.user?.name || 'Unknown'}
+                                      {comment.user?.alias || comment.user?.name || t('common.unknown')}
                                     </span>
                                     <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
                                       {new Date(comment.createdAt).toLocaleDateString('fr-FR', {
@@ -629,7 +635,7 @@ const Acceuil = () => {
                             <textarea
                               value={commentTexts[idea._id] || ''}
                               onChange={(e) => handleCommentTextChange(idea._id, e.target.value)}
-                              placeholder="Write a comment..."
+                              placeholder={t('home.writeComment')}
                               style={{
                                 width: '100%',
                                 minHeight: '60px',
@@ -665,7 +671,7 @@ const Acceuil = () => {
                                   transition: 'all 0.2s ease'
                                 }}
                               >
-                                {commentingIdeas.has(idea._id) ? 'Posting...' : 'Post Comment'}
+                                {commentingIdeas.has(idea._id) ? t('home.posting') : t('home.postComment')}
                               </button>
                             </div>
                           </div>
@@ -698,7 +704,7 @@ const Acceuil = () => {
         <div className="modal-overlay" onClick={() => setShowProfileModal(false)}>
           <div className="modal-container modal-profile-improved" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">Profile Settings</h2>
+              <h2 className="modal-title">{t('profile.profileSettings')}</h2>
               <button className="modal-close" onClick={() => setShowProfileModal(false)}>✕</button>
             </div>
 
@@ -709,13 +715,13 @@ const Acceuil = () => {
                   className={`profile-nav-item ${activeTab === 'info' ? 'active' : ''}`} 
                   onClick={() => { setActiveTab('info'); setError(''); setSuccess(''); }}
                 >
-                  <span className="icon">👤</span> Personal Information
+                  <span className="icon">👤</span> {t('nav.personalInfo')}
                 </button>
                 <button 
                   className={`profile-nav-item ${activeTab === 'password' ? 'active' : ''}`} 
                   onClick={() => { setActiveTab('password'); setError(''); setSuccess(''); }}
                 >
-                  <span className="icon">🔒</span> Change Password
+                  <span className="icon">🔒</span> {t('nav.changePassword')}
                 </button>
               </div>
 
@@ -723,8 +729,8 @@ const Acceuil = () => {
 
                 {activeTab === 'info' && (
                   <div className="tab-content-info">
-                    <h3 className="content-title">Update Your Personal Details</h3>
-                    <p className="content-subtitle">Review and update your profile information. This will be visible to other users.</p>
+                    <h3 className="content-title">{t('profile.updateDetails')}</h3>
+                    <p className="content-subtitle">{t('profile.updateDetailsSubtitle')}</p>
 
                     <div className="profile-photo-section">
                       <div className="profile-photo-preview">
@@ -732,7 +738,7 @@ const Acceuil = () => {
                       </div>
                       <div className="photo-upload-wrapper">
                         <label htmlFor="photo-upload" className="photo-upload-label">
-                          📷 Choose Photo
+                          📷 {t('profile.choosePhoto')}
                         </label>
                         <input 
                           id="photo-upload"
@@ -741,30 +747,30 @@ const Acceuil = () => {
                           onChange={handlePhotoChange} 
                           className="photo-upload-input" 
                         />
-                        <span className="photo-upload-hint">JPG, PNG or GIF (Max 5MB)</span>
+                        <span className="photo-upload-hint">{t('profile.photoHint')}</span>
                       </div>
                     </div>
 
                     <div className="form-grid-2">
                       <div className="form-group">
-                        <label htmlFor="name" className="form-label">👤 Full Name</label>
-                        <input id="name" type="text" value={editData.name} onChange={handleInfoChange} className="form-input" placeholder="Enter your full name" />
+                        <label htmlFor="name" className="form-label">👤 {t('profile.fullName')}</label>
+                        <input id="name" type="text" value={editData.name} onChange={handleInfoChange} className="form-input" placeholder={t('auth.enterName')} />
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="alias" className="form-label">✨ Username (Alias)</label>
-                        <input id="alias" type="text" value={editData.alias} onChange={handleInfoChange} className="form-input" placeholder="Your unique username" />
+                        <label htmlFor="alias" className="form-label">✨ {t('profile.username')}</label>
+                        <input id="alias" type="text" value={editData.alias} onChange={handleInfoChange} className="form-input" placeholder={t('auth.enterUsername')} />
                       </div>
                     </div>
 
                     <div className="form-grid-2">
                       <div className="form-group">
-                        <label htmlFor="email" className="form-label">📧 Email Address</label>
-                        <input id="email" type="email" value={editData.email} onChange={handleInfoChange} className="form-input" placeholder="Your email address" />
+                        <label htmlFor="email" className="form-label">📧 {t('profile.emailAddress')}</label>
+                        <input id="email" type="email" value={editData.email} onChange={handleInfoChange} className="form-input" placeholder={t('auth.enterEmail')} />
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="dateOfBirth" className="form-label">🎂 Date of Birth</label>
+                        <label htmlFor="dateOfBirth" className="form-label">🎂 {t('profile.dateOfBirth')}</label>
                         <input 
                           id="dateOfBirth" 
                           type="date" 
@@ -778,25 +784,25 @@ const Acceuil = () => {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="address" className="form-label">🏠 Address</label>
-                      <textarea id="address" value={editData.address} onChange={handleInfoChange} rows="3" className="form-input" placeholder="Enter your full address" />
+                      <label htmlFor="address" className="form-label">🏠 {t('profile.address')}</label>
+                      <textarea id="address" value={editData.address} onChange={handleInfoChange} rows="3" className="form-input" placeholder={t('auth.enterAddress')} />
                     </div>
                     {error && <div className="alert alert-error">{error}</div>}
                     {success && <div className="alert alert-success">{success}</div>}
                     <div className="form-actions">
-                      <button onClick={handleSaveInfo} disabled={loading} className="btn btn-primary">{loading ? '⏳ Saving...' : '✓ Save Changes'}</button>
-                      <button onClick={() => setShowProfileModal(false)} className="btn btn-secondary">Cancel</button>
+                      <button onClick={handleSaveInfo} disabled={loading} className="btn btn-primary">{loading ? `⏳ ${t('profile.saving')}` : `✓ ${t('profile.saveChanges')}`}</button>
+                      <button onClick={() => setShowProfileModal(false)} className="btn btn-secondary">{t('common.cancel')}</button>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'password' && (
                   <div className="tab-content-password">
-                    <h3 className="content-title">Change Your Password</h3>
-                    <p className="content-subtitle">Use a strong password that you haven't used before.</p>
+                    <h3 className="content-title">{t('profile.changePasswordTitle')}</h3>
+                    <p className="content-subtitle">{t('profile.changePasswordSubtitle')}</p>
 
                     <div className="form-group">
-                      <label htmlFor="oldPassword" className="form-label">Current Password</label>
+                      <label htmlFor="oldPassword" className="form-label">{t('auth.oldPassword')}</label>
                       <div className="password-input-wrapper">
                         <input id="oldPassword" type={passwordData.showOld ? 'text' : 'password'} value={passwordData.oldPassword} onChange={handlePasswordChange} className="form-input" />
                         <button type="button" onClick={() => setPasswordData({ ...passwordData, showOld: !passwordData.showOld })} className="toggle-password">{passwordData.showOld ? '👁️' : '👁️‍🗨️'}</button>
@@ -804,7 +810,7 @@ const Acceuil = () => {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="newPassword" className="form-label">New Password</label>
+                      <label htmlFor="newPassword" className="form-label">{t('auth.newPassword')}</label>
                       <div className="password-input-wrapper">
                         <input id="newPassword" type={passwordData.showNew ? 'text' : 'password'} value={passwordData.newPassword} onChange={handlePasswordChange} className="form-input" />
                         <button type="button" onClick={() => setPasswordData({ ...passwordData, showNew: !passwordData.showNew })} className="toggle-password">{passwordData.showNew ? '👁️' : '👁️‍🗨️'}</button>
@@ -812,7 +818,7 @@ const Acceuil = () => {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="confirmPassword" className="form-label">Confirm New Password</label>
+                      <label htmlFor="confirmPassword" className="form-label">{t('auth.confirmPassword')}</label>
                       <div className="password-input-wrapper">
                         <input id="confirmPassword" type={passwordData.showConfirm ? 'text' : 'password'} value={passwordData.confirmPassword} onChange={handlePasswordChange} className="form-input" />
                         <button type="button" onClick={() => setPasswordData({ ...passwordData, showConfirm: !passwordData.showConfirm })} className="toggle-password">{passwordData.showConfirm ? '👁️' : '👁️‍🗨️'}</button>
@@ -821,8 +827,8 @@ const Acceuil = () => {
                     {error && <div className="alert alert-error">{error}</div>}
                     {success && <div className="alert alert-success">{success}</div>}
                     <div className="form-actions">
-                      <button onClick={handleChangePassword} disabled={loading} className="btn btn-primary">{loading ? '⏳ Updating...' : '✓ Update Password'}</button>
-                      <button onClick={() => setShowProfileModal(false)} className="btn btn-secondary">Cancel</button>
+                      <button onClick={handleChangePassword} disabled={loading} className="btn btn-primary">{loading ? `⏳ ${t('profile.updating')}` : `✓ ${t('profile.updatePassword')}`}</button>
+                      <button onClick={() => setShowProfileModal(false)} className="btn btn-secondary">{t('common.cancel')}</button>
                     </div>
                   </div>
                 )}
