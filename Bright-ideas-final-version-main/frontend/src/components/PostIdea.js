@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import '../styles/postIdea.css';
 
 const PostIdea = ({ user, onIdeaPosted }) => {
+  const { t } = useTranslation();
   const [ideaText, setIdeaText] = useState('');
   const [ideaImage, setIdeaImage] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -16,7 +18,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setError('Image must not exceed 5MB');
+        setError(t('home.imageSizeError'));
         return;
       }
       const reader = new FileReader();
@@ -36,12 +38,12 @@ const PostIdea = ({ user, onIdeaPosted }) => {
     setSuccess('');
 
     if (!ideaText.trim()) {
-      setError('Please enter your idea');
+      setError(t('home.enterIdea'));
       return;
     }
 
     if (ideaText.length < 10) {
-      setError('Your idea must contain at least 10 characters');
+      setError(t('home.ideaMinChars'));
       return;
     }
 
@@ -61,10 +63,10 @@ const PostIdea = ({ user, onIdeaPosted }) => {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Error publishing idea');
+        throw new Error(data.message || t('home.errorPublishing'));
       }
 
-      setSuccess('Idea published successfully! 🎉');
+      setSuccess(t('home.ideaPublished'));
       setIdeaText('');
       setIdeaImage(null);
       setIsExpanded(false);
@@ -83,7 +85,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
       }
 
     } catch (err) {
-      setError(err.message || 'Error publishing idea');
+      setError(err.message || t('home.errorPublishing'));
     } finally {
       setLoading(false);
     }
@@ -116,7 +118,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
           </div>
           <div className="post-user-info">
             <span className="post-username">{user?.alias || user?.name}</span>
-            <span className="post-prompt">What's your next big idea?</span>
+            <span className="post-prompt">{t('home.whatsYourIdea')}</span>
           </div>
         </div>
 
@@ -124,7 +126,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
         <div className={`post-textarea-wrapper ${isExpanded ? 'expanded' : ''}`}>
           <textarea
             className="post-textarea"
-            placeholder="Share your innovative idea with the community..."
+            placeholder={t('home.shareIdea')}
             value={ideaText}
             onChange={(e) => setIdeaText(e.target.value)}
             onFocus={() => setIsExpanded(true)}
@@ -169,25 +171,25 @@ const PostIdea = ({ user, onIdeaPosted }) => {
                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
                   <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <span>Photo</span>
+                <span>{t('home.photo')}</span>
               </label>
 
-              <button className="action-btn" title="Ajouter un hashtag">
+              <button className="action-btn" title={t('home.tag')}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="4" y1="9" x2="20" y2="9"></line>
                   <line x1="4" y1="15" x2="20" y2="15"></line>
                   <line x1="10" y1="3" x2="8" y2="21"></line>
                   <line x1="16" y1="3" x2="14" y2="21"></line>
                 </svg>
-                <span>Tag</span>
+                <span>{t('home.tag')}</span>
               </button>
 
-              <button className="action-btn" title="Ajouter une catégorie">
+              <button className="action-btn" title={t('home.category')}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                   <line x1="7" y1="7" x2="7.01" y2="7"></line>
                 </svg>
-                <span>Catégorie</span>
+                <span>{t('home.category')}</span>
               </button>
             </div>
 
@@ -201,7 +203,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
                 }}
                 disabled={loading}
               >
-                Cancel
+                {t('home.cancel')}
               </button>
               <button 
                 className="publish-btn"
@@ -211,7 +213,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
                 {loading ? (
                   <>
                     <span className="spinner"></span>
-                    Publishing...
+                    {t('home.publishing')}
                   </>
                 ) : (
                   <>
@@ -219,7 +221,7 @@ const PostIdea = ({ user, onIdeaPosted }) => {
                       <line x1="22" y1="2" x2="11" y2="13"></line>
                       <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
-                    Publish
+                    {t('home.publish')}
                   </>
                 )}
               </button>

@@ -38,7 +38,18 @@ const ideaSchema = new mongoose.Schema(
       createdAt: {
         type: Date,
         default: Date.now
-      }
+      },
+      reports: [{
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User"
+        },
+        reason: String,
+        createdAt: {
+          type: Date,
+          default: Date.now
+        }
+      }]
     }],
     isReported: {
       type: Boolean,

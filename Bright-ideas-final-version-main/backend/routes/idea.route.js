@@ -8,6 +8,8 @@ import {
   deleteIdea, 
   toggleLike, 
   addComment,
+  reportIdea,
+  reportComment,
   getStatistics
 } from "../controllers/idea.controller.js";
 import { verifyToken } from "../middleware/auth.middleware.js";
@@ -24,6 +26,8 @@ router.put("/:id", verifyToken, updateIdea); // Update idea (admin or author)
 router.delete("/:id", verifyToken, deleteIdea);
 router.post("/:id/like", verifyToken, toggleLike);
 router.post("/:id/comment", verifyToken, addComment);
+router.post("/:id/report", verifyToken, reportIdea);
+router.post("/:id/comments/:commentId/report", verifyToken, reportComment);
 
 export default router;
 

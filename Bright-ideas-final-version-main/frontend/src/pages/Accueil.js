@@ -3,11 +3,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PostIdea from '../components/PostIdea';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import ReportModal from '../components/ReportModal';
 import '../styles/accueil.css';
 import bgImage from '../assets/bright-ideas-bg.jpg';
 
 const Acceuil = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -21,6 +22,7 @@ const Acceuil = () => {
   const [commentingIdeas, setCommentingIdeas] = useState(new Set()); // Track which ideas are being commented on
   const [commentTexts, setCommentTexts] = useState({}); // Store comment text for each idea
   const [showComments, setShowComments] = useState({}); // Track which ideas show comments section
+  const [reportModal, setReportModal] = useState({ isOpen: false, type: 'idea', ideaId: null, commentId: null });
   const navigate = useNavigate();
 
   const [editData, setEditData] = useState({
@@ -155,7 +157,7 @@ const Acceuil = () => {
     
     const commentText = commentTexts[ideaId]?.trim();
     if (!commentText || commentText.length === 0) {
-      setError(t('errors.generic'));
+      setError(t('errors.commentEmpty'));
       return;
     }
 
@@ -210,6 +212,53 @@ const Acceuil = () => {
       ...prev,
       [ideaId]: !prev[ideaId]
     }));
+  };
+
+  const handleOpenReportModal = (type, ideaId, commentId = null) => {
+    setReportModal({
+      isOpen: true,
+      type,
+      ideaId,
+      commentId
+    });
+  };
+
+  const handleCloseReportModal = () => {
+    setReportModal({
+      isOpen: false,
+      type: 'idea',
+      ideaId: null,
+      commentId: null
+    });
+  };
+
+  const handleReport = async (reason) => {
+    try {
+      let url;
+      if (reportModal.type === 'comment') {
+        url = `http://localhost:5000/api/ideas/${reportModal.ideaId}/comments/${reportModal.commentId}/report`;
+      } else {
+        url = `http://localhost:5000/api/ideas/${reportModal.ideaId}/report`;
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ reason }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || t('report.errorReporting'));
+      }
+
+      setSuccess(reportModal.type === 'comment' ? t('success.commentReported') : t('success.ideaReported'));
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      throw err;
+    }
   };
 
   const handleLogout = () => {
@@ -311,7 +360,7 @@ const Acceuil = () => {
       {/* SIDEBAR GAUCHE (Navigation) */}
       <aside className="sidebar" aria-label="Navigation">
         <div className="sidebar-top">
-          <div className="sidebar-brand">💡 Bright Ideas</div>
+          <div className="sidebar-brand">{t('common.brightIdeas')}</div>
           
           <div
             className="sidebar-profile-section"
@@ -439,7 +488,7 @@ const Acceuil = () => {
                           {idea.author?.alias || idea.author?.name || t('common.unknown')}
                         </div>
                         <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
-                          {new Date(idea.createdAt).toLocaleDateString('fr-FR', {
+                          {new Date(idea.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-SA' : i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
@@ -533,6 +582,34 @@ const Acceuil = () => {
                         <span>💬</span>
                         <span>{idea.comments?.length || 0} {t('home.comments')}</span>
                       </button>
+                      <button
+                        onClick={() => handleOpenReportModal('idea', idea._id)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'rgba(255,255,255,0.7)',
+                          cursor: 'pointer',
+                          padding: '8px 12px',
+                          borderRadius: '8px',
+                          transition: 'all 0.2s ease',
+                          fontSize: '0.95rem'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                          e.target.style.color = '#ef4444';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'transparent';
+                          e.target.style.color = 'rgba(255,255,255,0.7)';
+                        }}
+                        title={t('report.reportIdea')}
+                      >
+                        <span>🚩</span>
+                        <span>{t('report.reportButton')}</span>
+                      </button>
                     </div>
 
                     {/* Comments Section */}
@@ -577,19 +654,45 @@ const Acceuil = () => {
                                   </div>
                                 )}
                                 <div style={{ flex: 1 }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                    <span style={{ fontWeight: 'bold', color: '#fff', fontSize: '0.9rem' }}>
-                                      {comment.user?.alias || comment.user?.name || t('common.unknown')}
-                                    </span>
-                                    <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
-                                      {new Date(comment.createdAt).toLocaleDateString('fr-FR', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                      })}
-                                    </span>
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <span style={{ fontWeight: 'bold', color: '#fff', fontSize: '0.9rem' }}>
+                                        {comment.user?.alias || comment.user?.name || t('common.unknown')}
+                                      </span>
+                                      <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                                        {new Date(comment.createdAt).toLocaleDateString(i18n.language === 'ar' ? 'ar-SA' : i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
+                                          year: 'numeric',
+                                          month: 'short',
+                                          day: 'numeric',
+                                          hour: '2-digit',
+                                          minute: '2-digit'
+                                        })}
+                                      </span>
+                                    </div>
+                                    <button
+                                      onClick={() => handleOpenReportModal('comment', idea._id, comment._id)}
+                                      style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: 'rgba(255,255,255,0.5)',
+                                        cursor: 'pointer',
+                                        padding: '4px 8px',
+                                        borderRadius: '4px',
+                                        fontSize: '0.75rem',
+                                        transition: 'all 0.2s ease'
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                                        e.target.style.color = '#ef4444';
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.target.style.background = 'transparent';
+                                        e.target.style.color = 'rgba(255,255,255,0.5)';
+                                      }}
+                                      title={t('report.reportComment')}
+                                    >
+                                      🚩 {t('report.reportButton')}
+                                    </button>
                                   </div>
                                   <p style={{ 
                                     color: 'rgba(255,255,255,0.9)', 
@@ -837,6 +940,14 @@ const Acceuil = () => {
           </div>
         </div>
       )}
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={reportModal.isOpen}
+        onClose={handleCloseReportModal}
+        onReport={handleReport}
+        type={reportModal.type}
+      />
     </div>
   );
 };

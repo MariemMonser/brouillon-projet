@@ -11,7 +11,8 @@
     "confirm": "Confirmer",
     "yes": "Oui",
     "no": "Non",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "brightIdeas": "💡 Bright Ideas"
   },
   "nav": {
     "home": "Accueil",
@@ -59,7 +60,20 @@
     "comments": "commentaires",
     "showComments": "Afficher les Commentaires",
     "hideComments": "Masquer les Commentaires",
-    "noComments": "Aucun commentaire pour le moment."
+    "noComments": "Aucun commentaire pour le moment.",
+    "whatsYourIdea": "Quelle est votre prochaine grande idée ?",
+    "shareIdea": "Partagez votre idée innovante avec la communauté...",
+    "photo": "Photo",
+    "tag": "Tag",
+    "category": "Catégorie",
+    "cancel": "Annuler",
+    "publish": "Publier",
+    "publishing": "Publication...",
+    "enterIdea": "Veuillez entrer votre idée",
+    "ideaMinChars": "Votre idée doit contenir au moins 10 caractères",
+    "imageSizeError": "L'image ne doit pas dépasser 5 Mo",
+    "ideaPublished": "Idée publiée avec succès ! 🎉",
+    "errorPublishing": "Erreur lors de la publication de l'idée"
   },
   "profile": {
     "profileSettings": "Paramètres du Profil",
@@ -142,7 +156,13 @@
     "generic": "Une erreur s'est produite",
     "network": "Erreur réseau. Veuillez vérifier votre connexion.",
     "unauthorized": "Accès non autorisé",
-    "notFound": "Ressource introuvable"
+    "notFound": "Ressource introuvable",
+    "commentEmpty": "Le commentaire ne peut pas être vide",
+    "errorFetchingIdeas": "Erreur lors du chargement des idées",
+    "errorLikingIdea": "Erreur lors de l'ajout d'un like",
+    "errorAddingComment": "Erreur lors de l'ajout du commentaire",
+    "errorUpdating": "Erreur lors de la mise à jour",
+    "errorChangingPassword": "Erreur lors du changement de mot de passe"
   },
   "success": {
     "ideaPosted": "Idée publiée avec succès",
@@ -150,7 +170,32 @@
     "ideaDeleted": "Idée supprimée avec succès",
     "profileUpdated": "Profil mis à jour avec succès",
     "passwordChanged": "Mot de passe changé avec succès",
-    "commentAdded": "Commentaire ajouté avec succès"
+    "commentAdded": "Commentaire ajouté avec succès",
+    "ideaReported": "Idée signalée avec succès",
+    "commentReported": "Commentaire signalé avec succès"
+  },
+  "report": {
+    "reportIdea": "Signaler l'Idée",
+    "reportComment": "Signaler le Commentaire",
+    "description": "Aidez-nous à comprendre le problème. Votre signalement sera examiné par notre équipe de modération.",
+    "selectReason": "Sélectionnez une raison",
+    "spam": "Spam ou contenu trompeur",
+    "inappropriate": "Contenu inapproprié",
+    "hateSpeech": "Discours de haine ou discrimination",
+    "harassment": "Harcèlement ou intimidation",
+    "falseInfo": "Fausses informations",
+    "other": "Autre",
+    "additionalDetails": "Détails supplémentaires (optionnel)",
+    "detailsPlaceholder": "Veuillez fournir plus d'informations sur la raison de votre signalement...",
+    "reasonRequired": "Veuillez sélectionner une raison ou fournir des détails",
+    "reasonTooLong": "La raison ne peut pas dépasser 500 caractères",
+    "reporting": "Signalement...",
+    "submit": "Soumettre le Signalement",
+    "errorReporting": "Erreur lors de l'envoi du signalement",
+    "alreadyReported": "Vous avez déjà signalé ceci",
+    "reportButton": "Signaler"
   }
 }
+
+
 

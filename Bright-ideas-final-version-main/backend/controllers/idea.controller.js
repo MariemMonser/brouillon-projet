@@ -281,6 +281,137 @@ export const addComment = async (req, res) => {
   }
 };
 
+// REPORT IDEA
+export const reportIdea = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const userId = req.user._id;
+
+    if (!reason || reason.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Veuillez fournir une raison pour le signalement"
+      });
+    }
+
+    if (reason.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "La raison ne peut pas dépasser 500 caractères"
+      });
+    }
+
+    const idea = await Idea.findById(id);
+    if (!idea) {
+      return res.status(404).json({
+        success: false,
+        message: "Idée non trouvée"
+      });
+    }
+
+    // Check if user already reported this idea
+    const alreadyReported = idea.reports.some(
+      report => report.user.toString() === userId.toString()
+    );
+
+    if (alreadyReported) {
+      return res.status(400).json({
+        success: false,
+        message: "Vous avez déjà signalé cette idée"
+      });
+    }
+
+    idea.reports.push({
+      user: userId,
+      reason: reason.trim()
+    });
+
+    // Mark as reported if not already
+    if (!idea.isReported) {
+      idea.isReported = true;
+    }
+
+    await idea.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Idée signalée avec succès"
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// REPORT COMMENT
+export const reportComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const { reason } = req.body;
+    const userId = req.user._id;
+
+    if (!reason || reason.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Veuillez fournir une raison pour le signalement"
+      });
+    }
+
+    if (reason.length > 500) {
+      return res.status(400).json({
+        success: false,
+        message: "La raison ne peut pas dépasser 500 caractères"
+      });
+    }
+
+    const idea = await Idea.findById(id);
+    if (!idea) {
+      return res.status(404).json({
+        success: false,
+        message: "Idée non trouvée"
+      });
+    }
+
+    const comment = idea.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({
+        success: false,
+        message: "Commentaire non trouvé"
+      });
+    }
+
+    // Check if user already reported this comment
+    const alreadyReported = comment.reports && comment.reports.some(
+      report => report.user.toString() === userId.toString()
+    );
+
+    if (alreadyReported) {
+      return res.status(400).json({
+        success: false,
+        message: "Vous avez déjà signalé ce commentaire"
+      });
+    }
+
+    if (!comment.reports) {
+      comment.reports = [];
+    }
+
+    comment.reports.push({
+      user: userId,
+      reason: reason.trim()
+    });
+
+    await idea.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Commentaire signalé avec succès"
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 // GET STATISTICS (for admin)
 export const getStatistics = async (req, res) => {
   try {

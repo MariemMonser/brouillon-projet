@@ -11,7 +11,8 @@
     "confirm": "Confirm",
     "yes": "Yes",
     "no": "No",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "brightIdeas": "💡 Bright Ideas"
   },
   "nav": {
     "home": "Home",
@@ -59,7 +60,20 @@
     "comments": "comments",
     "showComments": "Show Comments",
     "hideComments": "Hide Comments",
-    "noComments": "No comments yet."
+    "noComments": "No comments yet.",
+    "whatsYourIdea": "What's your next big idea?",
+    "shareIdea": "Share your innovative idea with the community...",
+    "photo": "Photo",
+    "tag": "Tag",
+    "category": "Category",
+    "cancel": "Cancel",
+    "publish": "Publish",
+    "publishing": "Publishing...",
+    "enterIdea": "Please enter your idea",
+    "ideaMinChars": "Your idea must contain at least 10 characters",
+    "imageSizeError": "Image must not exceed 5MB",
+    "ideaPublished": "Idea published successfully! 🎉",
+    "errorPublishing": "Error publishing idea"
   },
   "profile": {
     "profileSettings": "Profile Settings",
@@ -142,7 +156,13 @@
     "generic": "An error occurred",
     "network": "Network error. Please check your connection.",
     "unauthorized": "Unauthorized access",
-    "notFound": "Resource not found"
+    "notFound": "Resource not found",
+    "commentEmpty": "Comment cannot be empty",
+    "errorFetchingIdeas": "Error fetching ideas",
+    "errorLikingIdea": "Error liking idea",
+    "errorAddingComment": "Error adding comment",
+    "errorUpdating": "Error updating",
+    "errorChangingPassword": "Error changing password"
   },
   "success": {
     "ideaPosted": "Idea posted successfully",
@@ -150,7 +170,32 @@
     "ideaDeleted": "Idea deleted successfully",
     "profileUpdated": "Profile updated successfully",
     "passwordChanged": "Password changed successfully",
-    "commentAdded": "Comment added successfully"
+    "commentAdded": "Comment added successfully",
+    "ideaReported": "Idea reported successfully",
+    "commentReported": "Comment reported successfully"
+  },
+  "report": {
+    "reportIdea": "Report Idea",
+    "reportComment": "Report Comment",
+    "description": "Help us understand the problem. Your report will be reviewed by our moderation team.",
+    "selectReason": "Select a reason",
+    "spam": "Spam or misleading content",
+    "inappropriate": "Inappropriate content",
+    "hateSpeech": "Hate speech or discrimination",
+    "harassment": "Harassment or bullying",
+    "falseInfo": "False information",
+    "other": "Other",
+    "additionalDetails": "Additional details (optional)",
+    "detailsPlaceholder": "Please provide more information about why you're reporting this...",
+    "reasonRequired": "Please select a reason or provide details",
+    "reasonTooLong": "Reason cannot exceed 500 characters",
+    "reporting": "Reporting...",
+    "submit": "Submit Report",
+    "errorReporting": "Error submitting report",
+    "alreadyReported": "You have already reported this",
+    "reportButton": "Report"
   }
 }
+
+
 
